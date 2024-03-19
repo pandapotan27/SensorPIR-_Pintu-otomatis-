@@ -1,0 +1,37 @@
+#include <Servo.h>  // Sertakan library Servo untuk mengontrol motor servo.
+int Pir = 8;  // Tentukan nomor pin untuk sensor PIR.
+int statusPir = 0;  // Inisialisasi variabel untuk menyimpan status sensor PIR.
+Servo myservo;  // Buat objek Servo bernama 'myservo' untuk mengontrol motor servo.
+
+void setup() {
+  Serial.begin(9600);  // Mulai komunikasi serial pada baud rate 9600 untuk tujuan debugging.
+  Serial.println("Smart Door");  // Tampilkan pesan ke monitor serial.
+  myservo.attach(6);  // Lampirkan motor servo ke pin 6.
+  pinMode(Pir, INPUT);  // Setel pin PIR sebagai input.
+}
+
+void loop() {
+  statusPir = digitalRead(Pir);  // Baca status sensor PIR.
+
+  // Jika terdeteksi gerakan:
+  if(statusPir == HIGH){
+    myservo.write(45);  // Putar motor servo ke posisi 45 derajat (pintu terbuka).
+    delay(1000);  // Tunggu selama 1 detik.
+    myservo.write(0);  // Putar motor servo kembali ke posisi 0 derajat (penuh terbuka).
+    delay(1000);  // Tunggu selama 1 detik.
+    myservo.write(90);  // Putar motor servo ke posisi 90 derajat (posisi tengah).
+    delay(1000);  // Tunggu selama 1 detik.
+    Serial.println("Pintu Terbuka");  // Tampilkan "Pintu Terbuka" ke monitor serial.
+  }
+  // Jika tidak terdeteksi gerakan:
+  else {
+    myservo.write(135);  // Putar motor servo ke posisi 135 derajat (pintu tertutup).
+    delay(1000);  // Tunggu selama 1 detik.
+    myservo.write(180);  // Putar motor servo ke posisi 180 derajat (penuh tertutup).
+    delay(1000);  // Tunggu selama 1 detik.
+    myservo.write(90);  // Putar motor servo ke posisi 90 derajat (posisi tengah).
+    delay(1000);  // Tunggu selama 1 detik.
+    Serial.println("Pintu Tertutup");  // Tampilkan "Pintu Tertutup" ke monitor serial.
+  }
+  delay(1000);  // Tunggu selama 1 detik sebelum mengulangi loop.
+}
